@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise!</title>
+    <style>
+        :root { --flame-tilt: 0deg; }
+        body { font-family: 'Arial', sans-serif; background: #2c3e50; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow-x: hidden; }
+        
+        /* Password Section */
+        #pass-gate { text-align: center; background: #34495e; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input { padding: 10px; border-radius: 5px; border: none; width: 200px; font-size: 16px; }
+        button { padding: 10px 20px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        #hint { color: #f1c40f; margin-top: 15px; display: none; font-style: italic; }
+
+        /* Main Content (Hidden Initially) */
+        #main-content { display: none; text-align: center; width: 100%; max-width: 600px; padding: 20px; }
+
+        /* Animated Cake */
+        .cake { position: relative; width: 150px; height: 100px; background: #f9ca24; margin: 50px auto; border-radius: 10px 10px 0 0; }
+        .candle { position: absolute; top: -40px; left: 50%; width: 10px; height: 40px; background: #eb4d4b; transform: translateX(-50%); }
+        .flame { 
+            position: absolute; top: -20px; left: 50%; width: 15px; height: 25px; 
+            background: #ff9f43; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            transform: translateX(-50%) rotate(var(--flame-tilt));
+            box-shadow: 0 0 20px #ff9f43;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Slideshow */
+        .slideshow-container { position: relative; height: 300px; margin-top: 30px; overflow: hidden; border-radius: 15px; border: 5px solid white; }
+        .slide { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s ease-in-out; }
+        .slide.active { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div id="pass-gate">
+        <h2>Enter Access Code</h2>
+        <input type="password" id="pw-input" placeholder="Password...">
+        <br>
+        <button onclick="checkPassword()">Enter</button>
+        <p id="hint">Hint: Excited ka Vivek style synonym</p>
+    </div>
+
+    <div id="main-content">
+        <h1>Happy Birthday Vivek! 🎂</h1>
+        
+        <div class="cake">
+            <div class="candle">
+                <div class="flame" id="flame"></div>
+            </div>
+        </div>
+
+        <div class="slideshow-container">
+            <img src="images/pic1.jpg" class="slide active">
+            <img src="images/pic2.jpg" class="slide">
+            <img src="images/pic3.jpg" class="slide">
+        </div>
+    </div>
+
+    <script>
+        // REPLACE 'oteb' WITH THE ACTUAL PASSWORD
+        const CORRECT_PW = "assited"; 
+
+        function checkPassword() {
+            const input = document.getElementById('pw-input').value;
+            if (input.toLowerCase() === CORRECT_PW) {
+                document.getElementById('pass-gate').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                startSlideshow();
+                requestMotionPermission();
+            } else {
+                document.getElementById('hint').style.display = 'block';
+            }
+        }
+
+        // Slideshow Logic
+        let currentSlide = 0;
+        function startSlideshow() {
+            const slides = document.querySelectorAll('.slide');
+            setInterval(() => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }, 3000); // Changes every 3 seconds
+        }
+
+        // Motion Logic
+        function requestMotionPermission() {
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission()
+                    .then(state => { if (state === 'granted') { window.addEventListener('deviceorientation', handleMotion); } })
+                    .catch(console.error);
+            } else {
+                window.addEventListener('deviceorientation', handleMotion);
+            }
+        }
+
+        function handleMotion(event) {
+            // Beta is front-to-back tilt, Gamma is left-to-right tilt
+            let tilt = event.gamma || 0; 
+            document.documentElement.style.setProperty('--flame-tilt', (tilt * -1) + 'deg');
+        }
+    </script>
+</body>
+</html>
