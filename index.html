@@ -3,96 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday Surprise for Vivek!</title>
+    <title>Birthday Surprise</title>
     <style>
         :root { --flame-tilt: 0deg; }
+        body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; }
         
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: #1a1a2e; 
-            color: white; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            overflow-x: hidden; 
-        }
+        /* Password Gate */
+        #pass-gate { text-align: center; background: #16213e; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        input { padding: 12px; border-radius: 8px; border: none; width: 220px; font-size: 16px; margin-bottom: 10px; text-align: center; }
+        button { padding: 12px 25px; background: #e94560; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        #hint { color: #f1c40f; margin-top: 15px; display: none; font-style: italic; }
 
-        /* Password Section */
-        #pass-gate { 
-            text-align: center; 
-            background: #16213e; 
-            padding: 40px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
-            border: 1px solid #0f3460;
+        /* Cake Page */
+        #cake-page { display: none; text-align: center; }
+        .cake { position: relative; width: 250px; height: 120px; background: #f9ca24; margin: 60px auto; border-radius: 15px 15px 0 0; box-shadow: inset 0 -10px 0 #f0932b; }
+        
+        /* 22 Candles Grid */
+        .candles-container { 
+            position: absolute; top: -35px; left: 10px; right: 10px;
+            display: grid; grid-template-columns: repeat(11, 1fr); gap: 5px;
         }
-        input { 
-            padding: 12px; 
-            border-radius: 8px; 
-            border: none; 
-            width: 220px; 
-            font-size: 16px; 
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        button { 
-            padding: 12px 25px; 
-            background: #e94560; 
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        button:hover { background: #ff2e63; }
-        #hint { color: #f1c40f; margin-top: 15px; display: none; font-style: italic; font-size: 0.9rem; }
-
-        /* Main Content */
-        #main-content { display: none; text-align: center; width: 90%; max-width: 600px; padding: 20px; }
-        h1 { color: #e94560; font-size: 2.5rem; text-shadow: 2px 2px 10px rgba(233, 69, 96, 0.5); margin-bottom: 10px; }
-
-        /* Animated Cake */
-        .cake-container { margin: 20px 0; position: relative; height: 160px; }
-        .cake { 
-            position: relative; width: 140px; height: 80px; 
-            background: #f9ca24; margin: 0 auto; 
-            border-radius: 12px 12px 0 0;
-            box-shadow: inset 0 -8px 0 #f0932b;
-        }
-        .candle { 
-            position: absolute; top: -40px; left: 50%; 
-            width: 10px; height: 40px; 
-            background: #eb4d4b; transform: translateX(-50%);
-            border-radius: 3px;
-        }
+        .candle { width: 6px; height: 35px; background: #eb4d4b; position: relative; border-radius: 2px; }
         .flame { 
-            position: absolute; top: -25px; left: 50%; 
-            width: 16px; height: 28px; 
-            background: radial-gradient(circle at bottom, #ff9f43, #ff4757); 
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute; top: -15px; left: 50%; width: 10px; height: 18px; 
+            background: #ff9f43; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             transform: translateX(-50%) rotate(var(--flame-tilt));
-            box-shadow: 0 0 15px #ff9f43;
-            transition: transform 0.1s ease-out;
-            transform-origin: bottom center;
+            transform-origin: bottom center; box-shadow: 0 0 10px #ff9f43;
         }
 
-        /* Slideshow */
-        .slideshow-container { 
-            position: relative; height: 450px; width: 100%; 
-            margin-top: 20px; overflow: hidden; 
-            border-radius: 20px; border: 4px solid #0f3460;
-            background: #0f3460;
-        }
-        .slide { 
-            position: absolute; width: 100%; height: 100%; 
-            object-fit: cover; opacity: 0; 
-            transition: opacity 1.2s ease-in-out; 
-            left: 0; top: 0;
-        }
-        .slide.active { opacity: 1; }
+        .btn-next { margin-top: 40px; padding: 15px 30px; font-size: 1.2rem; background: #4ee; color: #1a1a2e; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -101,93 +41,50 @@
         <h2>🔒 Private Access</h2>
         <input type="password" id="pw-input" placeholder="Enter password...">
         <br>
-        <button onclick="checkPassword()">Unlock Surprise</button>
-        <p id="hint">Hint: Excited ka Vivek Style Synonym</p>
+        <button onclick="checkPassword()">Unlock</button>
+        <p id="hint">Hint: excited ka Vivek style synonym</p>
     </div>
 
-    <div id="main-content">
+    <div id="cake-page">
         <h1>Happy Birthday Vivek! 🎂</h1>
-        
-        <div class="cake-container">
-            <div class="cake">
-                <div class="candle">
-                    <div class="flame" id="flame"></div>
-                </div>
-            </div>
+        <div class="cake">
+            <div class="candles-container" id="candles-grid"></div>
         </div>
-
-        <div class="slideshow-container" id="slideshow">
-            </div>
+        <button class="btn-next" onclick="location.href='gallery.html'">Click Here 🎁</button>
     </div>
 
     <script>
-        // --- CONFIG ---
-        const CORRECT_PW = "assited"; // Change this to your actual password
-        const TOTAL_IMAGES = 45;
-        let currentSlide = 0;
-
         function checkPassword() {
             const input = document.getElementById('pw-input').value;
-            if (input.toLowerCase() === CORRECT_PW) {
+            if (input.toLowerCase() === "assited") {
                 document.getElementById('pass-gate').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                
-                loadAndStartSlideshow(); 
-                requestMotionPermission();
+                document.getElementById('cake-page').style.display = 'block';
+                createCandles();
+                requestMotion();
             } else {
                 document.getElementById('hint').style.display = 'block';
             }
         }
 
-        function loadAndStartSlideshow() {
-            const container = document.getElementById('slideshow');
-            let imgIndices = [];
-
-            // 1. Create a list of numbers 1 to 45
-            for (let i = 1; i <= TOTAL_IMAGES; i++) {
-                imgIndices.push(i);
+        function createCandles() {
+            const grid = document.getElementById('candles-grid');
+            for(let i=0; i<22; i++) {
+                const c = document.createElement('div');
+                c.className = 'candle';
+                c.innerHTML = '<div class="flame"></div>';
+                grid.appendChild(c);
             }
-
-            // 2. Shuffle the numbers for a random order
-            for (let i = imgIndices.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [imgIndices[i], imgIndices[j]] = [imgIndices[j], imgIndices[i]];
-            }
-
-            // 3. Inject images into the HTML
-            imgIndices.forEach((num, index) => {
-                const img = document.createElement('img');
-                img.src = `${num}.jpeg`; // Assumes images are in the same folder
-                img.className = 'slide';
-                if (index === 0) img.classList.add('active');
-                container.appendChild(img);
-            });
-
-            // 4. Start the loop
-            setInterval(() => {
-                const allSlides = container.querySelectorAll('.slide');
-                allSlides[currentSlide].classList.remove('active');
-                currentSlide = (currentSlide + 1) % allSlides.length;
-                allSlides[currentSlide].classList.add('active');
-            }, 3000); 
         }
 
-        // --- TILT LOGIC ---
-        function requestMotionPermission() {
+        function requestMotion() {
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-                DeviceOrientationEvent.requestPermission()
-                    .then(state => { if (state === 'granted') window.addEventListener('deviceorientation', handleMotion); })
-                    .catch(e => console.error("Motion access denied."));
-            } else {
-                window.addEventListener('deviceorientation', handleMotion);
-            }
+                DeviceOrientationEvent.requestPermission().then(s => { if(s==='granted') window.addEventListener('deviceorientation', handleMotion); });
+            } else { window.addEventListener('deviceorientation', handleMotion); }
         }
 
-        function handleMotion(event) {
-            let tilt = event.gamma || 0; 
-            if (tilt > 45) tilt = 45;
-            if (tilt < -45) tilt = -45;
-            document.documentElement.style.setProperty('--flame-tilt', (tilt * -0.8) + 'deg');
+        function handleMotion(e) {
+            let tilt = e.gamma || 0;
+            document.documentElement.style.setProperty('--flame-tilt', (tilt * -0.6) + 'deg');
         }
     </script>
 </body>
