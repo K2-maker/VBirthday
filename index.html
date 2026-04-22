@@ -143,4 +143,35 @@
                 viewer.appendChild(img);
 
                 const t = document.createElement('img');
-                t.src = `${n
+                t.src = `${n}.jpeg`; t.className = 'thumb'; t.id = `t-${i}`;
+                if(i===0) t.classList.add('active');
+                roll.appendChild(t);
+            });
+
+            let cur = 0;
+            setInterval(() => {
+                document.getElementById(`m-${cur}`).classList.remove('active');
+                document.getElementById(`t-${cur}`).classList.remove('active');
+                cur = (cur + 1) % TOTAL;
+                document.getElementById(`m-${cur}`).classList.add('active');
+                const nextT = document.getElementById(`t-${cur}`);
+                nextT.classList.add('active');
+                
+                const scrollPos = nextT.offsetLeft - (window.innerWidth / 2) + (nextT.offsetWidth / 2);
+                roll.scrollTo({ left: scrollPos, behavior: 'smooth' });
+            }, 3000);
+        }
+
+        function requestMotion() {
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission().then(s => { if(s==='granted') window.addEventListener('deviceorientation', handleTilt); });
+            } else { window.addEventListener('deviceorientation', handleTilt); }
+        }
+
+        function handleTilt(e) {
+            let tilt = e.gamma || 0;
+            document.documentElement.style.setProperty('--flame-tilt', (tilt * -0.6) + 'deg');
+        }
+    </script>
+</body>
+</html>
